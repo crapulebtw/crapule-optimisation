@@ -8,9 +8,10 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QFont
+import pefile  # Assurez-vous d'installer cette bibliothèque avec `pip install pefile`
 
 # === CONFIGURATION DE MISE À JOUR ===
-VERSION_ACTUELLE = "1.0.0"
+VERSION_ACTUELLE = "1.0.3"
 VERSION_URL = "https://raw.githubusercontent.com/crapulebtw/crapule-optimisation/main/version.txt"
 EXE_URL = "https://github.com/crapulebtw/crapule-optimisation/releases/latest/download/CrapuleOptimisation.exe"
 NOM_EXE = "CrapuleOptimisation.exe"
@@ -279,6 +280,14 @@ class CustomWindow(QMainWindow):
                     with open(new_exe_path, 'wb') as f:
                         for chunk in r.iter_content(chunk_size=8192):
                             f.write(chunk)
+                    
+                    # Vérification de l'architecture du fichier EXE
+                    pe = pefile.PE(new_exe_path)
+                    if pe.FILE_HEADER.Machine not in [0x014c, 0x8664]:  # 0x014c pour 32-bit, 0x8664 pour 64-bit
+                        QMessageBox.warning(self, "Erreur", "Le fichier téléchargé n'est pas compatible avec votre système.")
+                        os.remove(new_exe_path)
+                        return
+                    
                     current_exe = sys.argv[0]
                     backup_exe = current_exe + ".bak"
                     os.rename(current_exe, backup_exe)
@@ -300,5 +309,3 @@ if __name__ == "__main__":
     window = CustomWindow()
     window.show()
     sys.exit(app.exec_())
-
-
