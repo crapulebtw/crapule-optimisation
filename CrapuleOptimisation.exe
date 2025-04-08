@@ -60,7 +60,7 @@ class CustomWindow(QMainWindow):
         self.logo.setFixedSize(50, 50)
         self.logo.mousePressEvent = self.open_settings
 
-        self.title_label = QLabel("Crapule Optimisation")
+        self.title_label = QLabel("Crapule Optimisation V1.0.1")
         self.title_label.setStyleSheet("color: cyan; font-size: 18px; font-weight: bold;")
         self.title_label.setAlignment(Qt.AlignCenter)
         self.title_label.setFixedHeight(60)
